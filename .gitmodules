@@ -1,0 +1,9 @@
+[submodule "lib/esp32-ds18b20"]
+	path = lib/esp32-ds18b20
+	url = https://github.com/htmltiger/esp32-ds18b20.git
+[submodule "lib/ArduinoNvs"]
+	path = lib/ArduinoNvs
+	url = https://github.com/rpolitex/ArduinoNvs.git
+[submodule "lib/PlcComponents"]
+	path = lib/PlcComponents
+	url = https://github.com/andrea1388/PlcComponents
