@@ -7,3 +7,9 @@
 [submodule "lib/PlcComponents"]
 	path = lib/PlcComponents
 	url = https://github.com/andrea1388/PlcComponents
+[submodule "lib/SimpleCLI"]
+	path = lib/SimpleCLI
+	url = https://github.com/SpacehuhnTech/SimpleCLI.git
+[submodule "lib/Proto485"]
+	path = lib/Proto485
+	url = https://github.com/andrea1388/Proto485.git
