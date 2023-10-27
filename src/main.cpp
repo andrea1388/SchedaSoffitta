@@ -59,6 +59,7 @@ void ProcessStdin() {
         if(c=='\n') 
         {
             cmd[cmdlen]=0;
+            cli.parse(cmd);
             onNewCommand(cmd);
             cmdlen=0;
         }
@@ -215,6 +216,35 @@ bool onIdle()
     return false;
 }
 
+void onCmdRestart(cmd* commandPointer)
+{
+
+}
+
+void onCmdSetSensorAddress(cmd* commandPointer)
+{
+    Command cmd(commandPointer);
+    Argument sensor = cmd.getArgument("sensor");
+    Argument address = cmd.getArgument("address");
+    if(sensor.getValue()=="panel")
+    {
+        panelTs.addr=std::stoll(address.getValue(),0,16);
+        NVS.setInt("psadd",panelTs.addr);
+    }
+}
+
+void onCmdError(cmd_error* e) {
+    CommandError cmdError(e); // Create wrapper object
+
+    Serial.print("ERROR: ");
+    Serial.println(cmdError.toString());
+
+    if (cmdError.hasCommand()) {
+        Serial.print("Did you mean \"");
+        Serial.print(cmdError.getCommand().toString());
+        Serial.println("\"?");
+    }
+}
 
 void setup() {
    //esp_log_level_set("ds18b20", ESP_LOG_DEBUG);
@@ -228,7 +258,6 @@ void setup() {
 
 
     bus485.cbElaboraComando=&onBusCommand;
-
 
     panelTs.begin(NVS.getInt("psadd"),onTempChange);
     tankTs.begin(NVS.getInt("tsadd"),onTempChange);
@@ -250,6 +279,13 @@ void setup() {
     Tread=NVS.getInt("tread",10);
     //esp_register_freertos_idle_hook(onIdle);
     xTaskCreate(readTempTask,"readTempTask",3000,NULL,1,NULL);
+
+    Command restart = cli.addSingleArgCmd("restart",onCmdRestart);
+    Command setsensoraddress = cli.addSingleArgCmd("setaddress",onCmdSetSensorAddress);
+    Argument sens = setsensoraddress.addPositionalArgument("sensor");
+    Argument address = setsensoraddress.addPositionalArgument("address");
+    cli.setOnError(onCmdError);
+
     ESP_LOGI(TAG,"Started. Tread=%u DT_ActPump=%u",Tread,DT_ActPump);
 
 }
