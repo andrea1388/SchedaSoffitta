@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <string>
 #include "ArduinoNvs.h"
 #include "Debounce.hpp"
 #include "Toggle.hpp"
@@ -60,7 +61,6 @@ void ProcessStdin() {
         {
             cmd[cmdlen]=0;
             cli.parse(cmd);
-            onNewCommand(cmd);
             cmdlen=0;
         }
         else
@@ -228,7 +228,9 @@ void onCmdSetSensorAddress(cmd* commandPointer)
     Argument address = cmd.getArgument("address");
     if(sensor.getValue()=="panel")
     {
-        panelTs.addr=std::stoll(address.getValue(),0,16);
+        std::string s=address.getValue();
+        std::size_t pos{};
+        panelTs.addr=std::stoll(s,nullptr,16);
         NVS.setInt("psadd",panelTs.addr);
     }
 }
